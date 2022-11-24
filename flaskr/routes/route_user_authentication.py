@@ -59,7 +59,8 @@ def route_user_authentication(app, mysql):
             f"""
             SELECT
                 UserEmail,
-                UserPassword
+                UserPassword,
+                UserId
             FROM
                 UsersT
             WHERE
@@ -75,7 +76,8 @@ def route_user_authentication(app, mysql):
                     "status": "OK",
                     "description": "Authenticated user.",
                     "response": {
-                        "auth": "success"
+                        "auth": "success",
+                        "user_id": f"{results[0][2]}"
                     }
                 })
             return jsonify({
@@ -86,7 +88,7 @@ def route_user_authentication(app, mysql):
                 }
             })
 
-            
+
     @app.route("/checkEmailAvailability", methods = ["POST", "GET"])
     def check_email_availability():
         if request.method == "GET":
