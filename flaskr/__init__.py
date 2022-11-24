@@ -4,6 +4,8 @@ from flask import Flask
 from flask_mysqldb import MySQL
 
 from .routes.route_events import route_events
+from .routes.route_edit_events import route_edit_events
+from .routes.route_join_events import route_join_events
 from .routes.route_user_information import route_user_information
 from .routes.route_user_authentication import route_user_authentication
 
@@ -28,6 +30,7 @@ def create_app(test_config = None):
 
     # routes
     route_events(app, mysql)
+    route_edit_events(app, mysql)
     route_user_authentication(app, mysql)
     route_user_information(app, mysql)
 
