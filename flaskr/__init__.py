@@ -31,6 +31,7 @@ def create_app(test_config = None):
     # routes
     route_events(app, mysql)
     route_edit_events(app, mysql)
+    route_join_events(app, mysql)
     route_user_authentication(app, mysql)
     route_user_information(app, mysql)
 

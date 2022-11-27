@@ -9,7 +9,15 @@ def route_events(app, mysql):
     @app.route("/getEvent")
     def get_all_events():
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM EventsT;")
+        cursor.execute(
+        """
+        SELECT
+            *
+        FROM
+            EventsT
+        WHERE
+            EventStatusId <> 4;
+        """)
         results = cursor.fetchall()
         mysql.connection.commit()
         cursor.close()
@@ -59,6 +67,8 @@ def route_events(app, mysql):
             INSERT INTO EventsT (
                 EventOwnerName,
                 EventOwnerId,
+                EventParticipants,
+                EventStatusId,
                 EventFiltersId,
                 EventName,
                 EventDate,
@@ -67,10 +77,13 @@ def route_events(app, mysql):
                 EventNumberOfPeople,
                 EventTotalNumberOfPeople,
                 EventDescription,
-                EventPhoneNumber
+                EventPhoneNumber,
+
             ) VALUES (
                 '{request.form.get("eventOwnerName")}',
                 {request.form.get("eventOwnerId")},
+                '[]',
+                3,
                 {filters.get(request.form.get("eventFilter"))},
                 '{request.form.get("eventName")}',
                 '{request.form.get("eventDate")}',
@@ -106,3 +119,27 @@ def route_events(app, mysql):
                     "event_id": f"{event_id}"
                 }
             })
+
+    @app.route("/deleteEvent", methods = ["POST", "GET"])
+    def delete_event():
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+        f"""
+        UPDATE
+            EventsT
+        SET
+            EventStatusId = 4
+        WHERE
+            EventId = {request.form.get("eventId")};
+        """)
+        results = cursor.fetchall()
+        mysql.connection.commit()
+        cursor.close()
+
+        return jsonify({
+            "status": "OK",
+            "description": "Event deleted.",
+            "response": {
+                "event_id": f"{request.form.get('eventId')}"
+            }
+        })
