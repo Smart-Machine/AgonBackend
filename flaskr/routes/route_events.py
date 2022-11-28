@@ -48,7 +48,7 @@ def route_events(app, mysql):
 
     @app.route("/getSeparateEvent", methods = ["POST"])
     def get_separate_event():
-        if method == "POST":
+        if request.method == "POST":
             cursor = mysql.connection.cursor()
             cursor.execute(
             f"""
@@ -65,9 +65,6 @@ def route_events(app, mysql):
             cursor.close()
 
             not_owned_events = [{
-                "status" : "OK",
-                "description": "Events were given.",
-                "response": {
                     "event_id": row[0],
                     "event_owner_name": row[1],
                     "event_owner_id": row[2],
@@ -84,7 +81,6 @@ def route_events(app, mysql):
                     "event_phone_number": row[13],
                     "event_latitude": row[14],
                     "event_longitude": row[15]
-                }
             } for row in results]
 
             cursor = mysql.connection.cursor()
@@ -103,9 +99,6 @@ def route_events(app, mysql):
             cursor.close()
 
             owned_events = [{
-                "status" : "OK",
-                "description": "Events were given.",
-                "response": {
                     "event_id": row[0],
                     "event_owner_name": row[1],
                     "event_owner_id": row[2],
@@ -122,7 +115,6 @@ def route_events(app, mysql):
                     "event_phone_number": row[13],
                     "event_latitude": row[14],
                     "event_longitude": row[15]
-                }
             } for row in results]
 
         return jsonify({
