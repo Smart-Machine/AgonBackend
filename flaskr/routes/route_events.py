@@ -39,7 +39,9 @@ def route_events(app, mysql):
                 "event_number_of_people": row[10],
                 "event_total_number_of_people": row[11],
                 "event_description": row[12],
-                "event_phone_number": row[13]
+                "event_phone_number": row[13],
+                "event_latitude": row[14],
+                "event_longitude": row[15]
             }
         } for row in results]
 
@@ -78,7 +80,8 @@ def route_events(app, mysql):
                 EventTotalNumberOfPeople,
                 EventDescription,
                 EventPhoneNumber,
-
+                EventLatitude,
+                EventLongitude
             ) VALUES (
                 '{request.form.get("eventOwnerName")}',
                 {request.form.get("eventOwnerId")},
@@ -92,7 +95,9 @@ def route_events(app, mysql):
                 {request.form.get("eventNumberOfPeople")},
                 {request.form.get("eventTotalNumberOfPeople")},
                 '{request.form.get("eventDescription")}',
-                '{request.form.get("eventPhoneNumber")}'
+                '{request.form.get("eventPhoneNumber")}',
+                {request.form.get("eventLatitude")},
+                {request.form.get("eventLongitude")}
             );
             """)
             cursor.execute(

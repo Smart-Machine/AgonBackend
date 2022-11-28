@@ -16,7 +16,8 @@ def route_user_authentication(app, mysql):
                 UserEmail,
                 UserPhoneNumber,
                 UserBirthday,
-                UserJoinedEventsIds
+                UserJoinedEventsIds,
+                UserOwnedEventsIds
             ) VALUES (
                 '{request.form.get("userFirstName")}',
                 '{request.form.get("userLastName")}',
@@ -25,6 +26,7 @@ def route_user_authentication(app, mysql):
                 '{request.form.get("userEmail")}',
                 '{request.form.get("userPhoneNumber")}',
                 '{request.form.get("userBirthday")}',
+                '[]',
                 '[]'
             );
             """)
