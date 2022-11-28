@@ -46,6 +46,95 @@ def route_events(app, mysql):
         } for row in results]
 
 
+    @app.route("/getSeparateEvent", methods = ["POST"])
+    def get_separate_event():
+        if method == "POST":
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+            f"""
+            SELECT
+                *
+            FROM
+                EventsT
+            WHERE
+                EventStatusId <> 4 AND
+                EventOwnerId <> {request.form.get("userId")};
+            """)
+            results = cursor.fetchall()
+            mysql.connection.commit()
+            cursor.close()
+
+            not_owned_events = [{
+                "status" : "OK",
+                "description": "Events were given.",
+                "response": {
+                    "event_id": row[0],
+                    "event_owner_name": row[1],
+                    "event_owner_id": row[2],
+                    "event_participants": row[3],
+                    "event_status_id": row[4],
+                    "event_filters_id": row[5],
+                    "event_name": row[6],
+                    "event_date": str(row[7]),
+                    "event_time": str(row[8]),
+                    "event_place": row[9],
+                    "event_number_of_people": row[10],
+                    "event_total_number_of_people": row[11],
+                    "event_description": row[12],
+                    "event_phone_number": row[13],
+                    "event_latitude": row[14],
+                    "event_longitude": row[15]
+                }
+            } for row in results]
+
+            cursor = mysql.connection.cursor()
+            cursor.execute(
+            f"""
+            SELECT
+                *
+            FROM
+                EventsT
+            WHERE
+                EventStatusId <> 4 AND
+                EventOwnerId = {request.form.get("userId")};
+            """)
+            results = cursor.fetchall()
+            mysql.connection.commit()
+            cursor.close()
+
+            owned_events = [{
+                "status" : "OK",
+                "description": "Events were given.",
+                "response": {
+                    "event_id": row[0],
+                    "event_owner_name": row[1],
+                    "event_owner_id": row[2],
+                    "event_participants": row[3],
+                    "event_status_id": row[4],
+                    "event_filters_id": row[5],
+                    "event_name": row[6],
+                    "event_date": str(row[7]),
+                    "event_time": str(row[8]),
+                    "event_place": row[9],
+                    "event_number_of_people": row[10],
+                    "event_total_number_of_people": row[11],
+                    "event_description": row[12],
+                    "event_phone_number": row[13],
+                    "event_latitude": row[14],
+                    "event_longitude": row[15]
+                }
+            } for row in results]
+
+        return jsonify({
+            "status": "OK",
+            "description": "Returned owned and not owned events by user id.",
+            "response": {
+                "not_owned_events": f"{not_owned_events}",
+                "owned_events": f"{owned_events}"
+            }
+        })
+
+
     @app.route("/createEvent", methods = ["POST", "GET"])
     def create_event():
         filters = {
